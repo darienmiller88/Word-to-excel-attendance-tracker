@@ -10,6 +10,15 @@ import (
 	"github.com/unidoc/unioffice/v2/document"
 )
 
+//Attendance object to store attedance data for each docx file.
+type Attendance struct{
+	date       string
+	time       string
+	course     string
+	location   string
+	students []string
+}
+
 // push from same laptop, fixed lol
 func main() {
 	godotenv.Load()
@@ -30,6 +39,11 @@ func main() {
 
 	for _, paragraph := range doc.Paragraphs() {
 		for _, r := range paragraph.Runs() {
+
+			if strings.HasPrefix(r.Text(), "Date") {
+				fmt.Println(r.Text())
+			}
+
 			if strings.HasPrefix(r.Text(), "Location") {
 				fmt.Println(r.Text())
 			}
