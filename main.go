@@ -37,24 +37,39 @@ func main() {
 
 	defer doc.Close()
 
+	attendance := Attendance{}
+	// attendances := []Attendance{}
+	addedDate, addedTime, addedLocation, addedCourse := false, false, false, false
+
 	for _, paragraph := range doc.Paragraphs() {
 		for _, r := range paragraph.Runs() {
 
-			if strings.HasPrefix(r.Text(), "Date") {
-				fmt.Println(r.Text())
+			if strings.HasPrefix(r.Text(), "Date"){
+				attendance.date = strings.Split(r.Text(), " ")[1]
+				addedDate = true
 			}
 
-			if strings.HasPrefix(r.Text(), "Location") {
-				fmt.Println(r.Text())
+			if strings.HasPrefix(r.Text(), "Location"){
+				attendance.location = strings.Split(r.Text(), " ")[1]
+				addedLocation = true
 			}
 
 			if strings.HasPrefix(r.Text(), "Course") {
-				fmt.Println(r.Text())
+				course, _ := strings.CutPrefix(r.Text(), "Course: ")
+				attendance.course = course
+				addedCourse = true
 			}
 
 			if strings.HasPrefix(r.Text(), "Time") {
-				fmt.Println(r.Text())
+				time, _ := strings.CutPrefix(r.Text(), "Time: ")
+				attendance.time = time
+				addedTime = true
+			}
+
+			if addedCourse && addedDate && addedLocation && addedTime {
+				fmt.Println(attendance)				
 				fmt.Println()
+				addedCourse, addedDate, addedTime, addedLocation = false, false, false, false
 			}
 		}
 	}
