@@ -9,11 +9,12 @@ import (
 	"github.com/unidoc/unioffice/v2/document"
 )
 
-func main(){
+// push from same laptop, fixed lol
+func main() {
 	godotenv.Load()
 
 	err := license.SetMeteredKey(os.Getenv(`UNIDOC_LICENSE_API_KEY`))
-	
+
 	if err != nil {
 		panic(err)
 	}
