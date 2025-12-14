@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/unidoc/unioffice/v2/common/license"
@@ -25,5 +26,22 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("notes:", doc.ExtractText().Text())
+	defer doc.Close()
+
+	for _, paragraph := range doc.Paragraphs() {
+		for _, r := range paragraph.Runs() {
+			if strings.HasPrefix(r.Text(), "Location") {
+				fmt.Println(r.Text())
+			}
+
+			if strings.HasPrefix(r.Text(), "Course") {
+				fmt.Println(r.Text())
+			}
+
+			if strings.HasPrefix(r.Text(), "Time") {
+				fmt.Println(r.Text())
+				fmt.Println()
+			}
+		}
+	}
 }
