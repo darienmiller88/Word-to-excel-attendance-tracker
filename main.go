@@ -29,7 +29,7 @@ func main() {
 		panic(err)
 	}
 
-	doc, err := document.Open("./docs/Pelham/November/11_3_25 Pelham.docx")
+	doc, err := document.Open("./docs/Pelham/November/11_10_25 Pelham.docx")
 
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func main() {
 
 	attendance := Attendance{}
 	attendances := []Attendance{}
-	addedDate, addedTime, addedLocation, addedCourse := false, false, false, false
 	startAddingStudents := false
+	attendanceComplete := false
 
 	for _, paragraph := range doc.Paragraphs() {
 		for _, r := range paragraph.Runs() {
@@ -49,30 +49,33 @@ func main() {
 				attendance.students = append(attendance.students, r.Text())
 			} else if startAddingStudents && len(r.Text()) == 0{
 				startAddingStudents = false
+				attendanceComplete = true
 			} else if strings.HasPrefix(r.Text(), "Date"){
 				attendance.date = strings.Split(r.Text(), " ")[1]
-				addedDate = true
 			} else if strings.HasPrefix(r.Text(), "Location"){
 				attendance.location = strings.Split(r.Text(), " ")[1]
-				addedLocation = true
 			} else if strings.HasPrefix(r.Text(), "Course") {
 				course, _ := strings.CutPrefix(r.Text(), "Course: ")
 				attendance.course = course
-				addedCourse = true
 			} else if strings.HasPrefix(r.Text(), "Time") {
 				time, _ := strings.CutPrefix(r.Text(), "Time: ")
 				attendance.time = time
-				addedTime = true
-			} else if strings.ToLower(r.Text()) == "participants:" {
+			}
+			
+			if strings.ToLower(r.Text()) == "participants:" {
 				startAddingStudents = true
 			}
 
-			if addedCourse && addedDate && addedLocation && addedTime {
+			if attendanceComplete{
 				attendances = append(attendances, attendance)
-				addedCourse, addedDate, addedTime, addedLocation = false, false, false, false
+				attendanceComplete = false
+				attendance.students = []string{}
 			}
 		}
 	}
 
-	fmt.Println(attendances)
+	for _, attendance := range attendances{
+		fmt.Println(attendance)
+		fmt.Println()
+	}
 }
